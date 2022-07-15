@@ -4,21 +4,27 @@ import * as healthMethods from '.'
 import projectProperties from '@utils/project_properties'
 import { Response } from 'express'
 
-const baseRoute = '/api/v1/account/login'
 const { formatTime, healthHandler } = healthMethods
 
 describe('Health route', () => {
   let request: supertest.SuperTest<supertest.Test>
+  const env = process.env
 
   beforeAll(() => {
+    jest.resetModules()
     request = supertest(app)
+    process.env = { ...env }
+  })
+  afterEach(() => {
+    process.env = env
   })
 
   it('Should call route with /health path', (done) => {
+    process.env.ENV = 'TEST'
     jest.spyOn(healthMethods, 'healthHandler')
 
     request
-      .get(`${baseRoute}/health`)
+      .get('/api/v1/account/health')
       .expect(200)
       .then((response) => {
         const { body } = response

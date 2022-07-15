@@ -1,5 +1,6 @@
 import app from './app'
 import { mongoConnect } from './infrastructure/database/connect'
+import displayRoutes from 'express-routemap'
 
 const port = process.env.PORT
 

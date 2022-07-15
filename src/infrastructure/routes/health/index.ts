@@ -26,4 +26,4 @@ export const healthHandler = (res: Response): Response => {
 }
 
 export const healthRoute: HealthRouteFnType = (router: Router): Router =>
-  router.get('/health', (req, res) => healthHandler(res))
+  router.get('/', (req, res) => healthHandler(res))

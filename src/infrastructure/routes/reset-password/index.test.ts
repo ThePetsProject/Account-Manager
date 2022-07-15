@@ -9,7 +9,7 @@ jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
 
 const baseRoute = '/api/v1/account/login'
-const { loginHandler } = loginModules
+const { getDataHandler: loginHandler } = loginModules
 
 jest.spyOn(global.console, 'error').mockImplementation(() => {})
 jest.spyOn(global.console, 'info').mockImplementation(() => {})
@@ -52,7 +52,7 @@ describe('Login route', () => {
       })
       .expect(200)
       .then(() => {
-        expect(loginModules.loginHandler).toHaveBeenCalled()
+        expect(loginModules.getDataHandler).toHaveBeenCalled()
         done()
       })
   })
