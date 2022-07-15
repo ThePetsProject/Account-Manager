@@ -18,17 +18,18 @@ export const resetPwdRecoveryHandler = async (
 ): Promise<Response> => {
   const { password, token } = req.body
 
+  if (!(password?.length && token?.length)) return res.sendStatus(400)
+
   const foundToken = await pwdRecoveryTokenModel.findOne({ token })
 
   if (!foundToken) return res.status(404).send({ message: 'No token' })
 
-  const foundUser = await user.findOne({ _id: foundToken.accountId })
+  const foundUser = await user.findOneAndUpdate(
+    { _id: foundToken.accountId },
+    { password }
+  )
 
   if (!foundUser) return res.status(404).send({ message: 'No user' })
-
-  const updatedUser = await foundUser.updateOne({ password })
-
-  if (!updatedUser) return res.sendStatus(500)
 
   await foundToken.delete()
 

@@ -2,7 +2,7 @@ import express from 'express'
 import cors, { CorsOptions } from 'cors'
 import { routesMaker } from './infrastructure/routes'
 import { healthRoute } from './infrastructure/routes/health'
-import validateJWT from './infrastructure/middlewares/jwt'
+import { validateJWT } from './infrastructure/middlewares/jwt'
 
 declare global {
   namespace Express {

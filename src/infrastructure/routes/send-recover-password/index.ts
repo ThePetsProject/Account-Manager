@@ -5,6 +5,7 @@ import { PwdRecoverTokenType } from '@src/infrastructure/database/models/pwd-rec
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
 import { UserType } from '@src/infrastructure/database/models/user'
+import { get } from 'lodash'
 
 export type SendPwdRecoveryRouteFnType = (
   router: Router,
@@ -21,7 +22,7 @@ export const sendPwdRecoveryHandler = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const { email } = req.body
+  const email = get(req, 'body.email', undefined)
 
   if (!email?.length) return res.sendStatus(401)
 
@@ -33,7 +34,7 @@ export const sendPwdRecoveryHandler = async (
 
   const recoverUrl = generateRecoverUrl(recoveryToken)
 
-  const newToken = pwdRecoveryTokenModel.create({
+  const newToken = await pwdRecoveryTokenModel.create({
     accountId: foundUser._id,
     token: recoveryToken,
   })

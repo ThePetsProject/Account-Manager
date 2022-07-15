@@ -1,180 +1,136 @@
+import * as uuid from 'uuid'
 import supertest from 'supertest'
 import app from '../../../app'
-import * as loginModules from '.'
-import { User } from '../../database/models/user'
+import * as sendPwdRecoveryModules from '.'
+import { User, UserType } from '../../database/models/user'
 import { Request, Response } from 'express'
+import {
+  PwdRecoverToken,
+  PwdRecoverTokenType,
+} from '@src/infrastructure/database/models/pwd-recovery-token'
 import axios, { AxiosError } from 'axios'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
 
-const baseRoute = '/api/v1/account/login'
-const { getDataHandler: loginHandler } = loginModules
+jest.mock('uuid')
+const uuidSpy = jest.spyOn(uuid, 'v4').mockReturnValue('fakeuuid')
+
+const { sendPwdRecoveryHandler } = sendPwdRecoveryModules
 
 jest.spyOn(global.console, 'error').mockImplementation(() => {})
 jest.spyOn(global.console, 'info').mockImplementation(() => {})
 
-const responseTokens = {
-  accToken: 'fakeacctoken',
-  refToken: 'fakereftoken',
-}
-const mockTokensResponse = () =>
-  mockedAxios.request.mockResolvedValueOnce({
-    data: responseTokens,
-  })
+const resMock = {
+  send: jest.fn().mockReturnThis(),
+  status: jest.fn().mockReturnThis(),
+  sendStatus: jest.fn().mockReturnThis(),
+} as any as Response
+
+const fakeEmail = 'fake@email.com'
 
 describe('Login route', () => {
+  process.env.APP_BASE_URL = 'fake_base_url'
+  process.env.RECOVER_PASSWORD_PATH = 'fake_path'
   let request: supertest.SuperTest<supertest.Test>
 
   beforeAll(() => {
     request = supertest(app)
   })
 
-  beforeEach(() => {
-    User.findOne = jest.fn().mockResolvedValueOnce({
-      checkPassword: jest.fn().mockResolvedValueOnce(true),
-    })
-  })
+  beforeEach(() => {})
 
   afterEach(() => {
-    jest.resetAllMocks()
+    jest.restoreAllMocks()
   })
 
-  it('Should call method when root path', (done) => {
-    jest.spyOn(loginModules, 'loginHandler')
-    mockTokensResponse()
+  it('Should respond 200 when token is created and sent', async () => {
+    User.findOne = jest.fn().mockResolvedValueOnce({} as UserType)
+    PwdRecoverToken.create = jest
+      .fn()
+      .mockResolvedValueOnce({} as PwdRecoverTokenType)
 
-    request
-      .post(`${baseRoute}/`)
-      .send({
-        email: 'fake@email.com',
-        password: 'fakepwd',
-      })
-      .expect(200)
-      .then(() => {
-        expect(loginModules.getDataHandler).toHaveBeenCalled()
-        done()
-      })
-  })
-
-  it('Should respond 200 when password match', async () => {
-    mockTokensResponse()
+    mockedAxios.request.mockResolvedValueOnce({})
 
     const req = {
       body: {
-        email: 'fake@email.com',
-        password: 'fakepwd',
+        email: fakeEmail,
       },
     } as Request
 
-    const res = {
-      send: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis(),
-    } as any as Response
-
-    const loginResponse = await loginHandler(User, req, res)
-    expect(loginResponse.status).toBeCalledWith(200)
-    expect(loginResponse.send).toBeCalledWith(responseTokens)
+    const response = await sendPwdRecoveryHandler(
+      PwdRecoverToken,
+      User,
+      req,
+      resMock
+    )
+    expect(response.sendStatus).toBeCalledWith(200)
   })
 
-  it('Should respond 404 when no user found', async () => {
+  it('Should respond 404 when User is not found', async () => {
     User.findOne = jest.fn().mockResolvedValueOnce(undefined)
 
     const req = {
       body: {
-        email: 'fake@email.com',
-        password: 'fakepwd',
+        email: fakeEmail,
       },
     } as Request
 
-    const res = {
-      send: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis(),
-    } as any as Response
-
-    const loginResponse = await loginHandler(User, req, res)
-    expect(loginResponse.status).toBeCalledWith(404)
-    expect(loginResponse.send).toBeCalledWith()
+    const response = await sendPwdRecoveryHandler(
+      PwdRecoverToken,
+      User,
+      req,
+      resMock
+    )
+    expect(response.sendStatus).toBeCalledWith(404)
   })
 
-  it('Should respond 401 when passwords wont match', async () => {
-    User.findOne = jest.fn().mockResolvedValueOnce({
-      checkPassword: jest.fn().mockResolvedValueOnce(false),
-    })
+  it('Should respond 500 when token could not be created', async () => {
+    User.findOne = jest.fn().mockResolvedValueOnce({} as UserType)
+    PwdRecoverToken.create = jest.fn().mockResolvedValueOnce(undefined)
 
     const req = {
       body: {
-        email: 'fake@email.com',
-        password: 'fakepwd',
+        email: fakeEmail,
       },
     } as Request
 
-    const res = {
-      send: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis(),
-    } as any as Response
-
-    const loginResponse = await loginHandler(User, req, res)
-    expect(loginResponse.status).toBeCalledWith(401)
-    expect(loginResponse.send).toBeCalledWith()
+    const response = await sendPwdRecoveryHandler(
+      PwdRecoverToken,
+      User,
+      req,
+      resMock
+    )
+    expect(response.sendStatus).toBeCalledWith(500)
   })
 
-  it('Should respond 400 if passsword is not a string', async () => {
+  it('Should respond 400 when email is empty', async () => {
     const req = {
       body: {
-        email: 'fake@email.com',
-        password: 123,
+        email: '',
       },
     } as Request
 
-    const res = {
-      send: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis(),
-    } as any as Response
-
-    const loginResponse = await loginHandler(User, req, res)
-    expect(loginResponse.status).toBeCalledWith(400)
-    expect(loginResponse.send).toBeCalledWith()
+    const response = await sendPwdRecoveryHandler(
+      PwdRecoverToken,
+      User,
+      req,
+      resMock
+    )
+    expect(response.sendStatus).toBeCalledWith(401)
   })
 
-  it('Should respond 400 if email is not an email', async () => {
+  it('Should respond 400 when email is not sent', async () => {
     const req = {
-      body: {
-        email: 'notanemail.com',
-        password: 'fakepwd',
-      },
+      body: {},
     } as Request
 
-    const res = {
-      send: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis(),
-    } as any as Response
-
-    const loginResponse = await loginHandler(User, req, res)
-    expect(loginResponse.status).toBeCalledWith(400)
-    expect(loginResponse.send).toBeCalledWith()
-  })
-
-  it('Should respond 500 if axios returns error', async () => {
-    const errorMsg = 'Error message'
-    mockedAxios.request.mockRejectedValueOnce(new Error(errorMsg) as AxiosError)
-
-    const req = {
-      body: {
-        email: 'fake@email.com',
-        password: 'fakepwd',
-      },
-    } as Request
-
-    const res = {
-      send: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis(),
-    } as any as Response
-
-    const loginResponse = await loginHandler(User, req, res)
-    expect(loginResponse.status).toBeCalledWith(500)
-    expect(loginResponse.send).toBeCalledWith({
-      message: errorMsg,
-    })
+    const response = await sendPwdRecoveryHandler(
+      PwdRecoverToken,
+      User,
+      req,
+      resMock
+    )
+    expect(response.sendStatus).toBeCalledWith(401)
   })
 })

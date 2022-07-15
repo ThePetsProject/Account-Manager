@@ -21,10 +21,9 @@ export const setDataHandler = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  console.log('setDataHandler')
   const email = get(req, 'body.email', undefined)
 
-  if (!(email || email.length)) return res.sendStatus(401)
+  if (!email?.length) return res.sendStatus(401)
 
   let payload = {} as UserDataPayload
 
@@ -41,7 +40,7 @@ export const setDataHandler = async (
   if (payload.password) {
     foundUser.password = payload.password
     const newUser = await foundUser.save()
-    // TODO: HANDLE NO PASSWORD UPDATE
+    if (!newUser) return res.sendStatus(500)
   }
 
   return res.status(200).send({})
