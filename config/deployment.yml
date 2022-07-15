@@ -55,20 +55,30 @@ spec:
         image: <IMAGE>
         imagePullPolicy: "Always"
         env:
+          - name: ENV
+            value: PRODUCTION
           - name: PORT
             value: "3600"
-          - name: MONGO_STRING_FILE_PATH
+          - name: SECRETS_PATH
             value: /vault/secrets/
+          - name: APP_BASE_URL
+            value: https://thepetsproject.tk
+          - name: RECOVER_PASSWORD_PATH
+            value: /account/recuperar-clave?token=
           - name: JWT_MANAGER_URL
             value: http://jwt-manager-service
-          - name: JWT_MANAGER_SET_PATH
-            value: api/v1/jwt
+          - name: JWT_MANAGER_VALIDATE_PATH
+            value: api/v1/jwt/validate
+          - name: MESSAGE_MANAGER_URL
+            value: http://message-manager-service
+          - name: MESSAGE_MANAGER_RECOVER_PWD_PATH
+            value: api/v1/messaging/recover-password
         ports:
         - containerPort: 3600
           name: sbp-port
         resources:
           requests:
-            cpu: "1"
+            cpu: "0.1"
             memory: 256Mi
           limits:
             cpu: "1"
