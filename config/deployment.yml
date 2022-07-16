@@ -62,7 +62,7 @@ spec:
           - name: SECRETS_PATH
             value: /vault/secrets/
           - name: APP_BASE_URL
-            value: https://thepetsproject.tk
+            value: https://thepetsproject.org
           - name: RECOVER_PASSWORD_PATH
             value: /account/recuperar-clave?token=
           - name: JWT_MANAGER_URL
