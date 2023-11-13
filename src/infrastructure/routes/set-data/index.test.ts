@@ -47,8 +47,8 @@ describe('Login route', () => {
     } as Request
 
     const response = await setDataHandler(User, req, resMock)
-    expect(response.status).toBeCalledWith(200)
-    expect(response.send).toBeCalledWith({})
+    expect(response.status).toHaveBeenCalledWith(200)
+    expect(response.send).toHaveBeenCalledWith({})
   })
 
   it('Should respond 404 when no user found', async () => {
@@ -61,7 +61,7 @@ describe('Login route', () => {
     } as Request
 
     const response = await setDataHandler(User, req, resMock)
-    expect(response.sendStatus).toBeCalledWith(404)
+    expect(response.sendStatus).toHaveBeenCalledWith(404)
   })
 
   it('Should respond 500 when trying to save password fails', async () => {
@@ -76,7 +76,7 @@ describe('Login route', () => {
     } as Request
 
     const response = await setDataHandler(User, req, resMock)
-    expect(response.sendStatus).toBeCalledWith(500)
+    expect(response.sendStatus).toHaveBeenCalledWith(500)
   })
 
   it('Should respond 401 when email is empty', async () => {
@@ -93,7 +93,7 @@ describe('Login route', () => {
     } as Request
 
     const response = await setDataHandler(User, req, resMock)
-    expect(response.sendStatus).toBeCalledWith(401)
+    expect(response.sendStatus).toHaveBeenCalledWith(401)
   })
 
   it('Should respond 401 when email is not sent', async () => {
@@ -114,6 +114,6 @@ describe('Login route', () => {
     } as Request
 
     const response = await setDataHandler(User, req, resMock)
-    expect(response.sendStatus).toBeCalledWith(401)
+    expect(response.sendStatus).toHaveBeenCalledWith(401)
   })
 })

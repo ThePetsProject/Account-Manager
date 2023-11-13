@@ -50,7 +50,7 @@ describe('Validate JWT MDW', () => {
     expect(typeof validateJWTResponse).toBe('object')
     expect(
       validateJWTResponse['sendStatus' as keyof typeof validateJWTResponse]
-    ).toBeCalledWith(401)
+    ).toHaveBeenCalledWith(401)
   })
 
   it('Should return 401 when JWT is not valid', async () => {
@@ -71,6 +71,6 @@ describe('Validate JWT MDW', () => {
     expect(typeof validateJWTResponse).toBe('object')
     expect(
       validateJWTResponse['sendStatus' as keyof typeof validateJWTResponse]
-    ).toBeCalledWith(401)
+    ).toHaveBeenCalledWith(401)
   })
 })

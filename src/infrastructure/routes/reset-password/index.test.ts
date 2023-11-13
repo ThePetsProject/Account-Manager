@@ -53,7 +53,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(204)
+    expect(response.sendStatus).toHaveBeenCalledWith(204)
   })
 
   it('Should respond 404 when no token found', async () => {
@@ -74,8 +74,8 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.status).toBeCalledWith(404)
-    expect(response.send).toBeCalledWith({ message: 'No token' })
+    expect(response.status).toHaveBeenCalledWith(404)
+    expect(response.send).toHaveBeenCalledWith({ message: 'No token' })
   })
 
   it('Should respond 404 when no user found', async () => {
@@ -97,8 +97,8 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.status).toBeCalledWith(404)
-    expect(response.send).toBeCalledWith({ message: 'No user' })
+    expect(response.status).toHaveBeenCalledWith(404)
+    expect(response.send).toHaveBeenCalledWith({ message: 'No user' })
   })
 
   it('Should respond 400 when empty password is sent', async () => {
@@ -115,7 +115,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(400)
+    expect(response.sendStatus).toHaveBeenCalledWith(400)
   })
 
   it('Should respond 400 when no password is sent', async () => {
@@ -131,7 +131,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(400)
+    expect(response.sendStatus).toHaveBeenCalledWith(400)
   })
 
   it('Should respond 400 when token is empty', async () => {
@@ -148,7 +148,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(400)
+    expect(response.sendStatus).toHaveBeenCalledWith(400)
   })
 
   it('Should respond 400 when no token is sent', async () => {
@@ -164,6 +164,6 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(400)
+    expect(response.sendStatus).toHaveBeenCalledWith(400)
   })
 })

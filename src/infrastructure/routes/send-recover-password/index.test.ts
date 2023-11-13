@@ -64,7 +64,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(200)
+    expect(response.sendStatus).toHaveBeenCalledWith(200)
   })
 
   it('Should respond 404 when User is not found', async () => {
@@ -82,7 +82,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(404)
+    expect(response.sendStatus).toHaveBeenCalledWith(404)
   })
 
   it('Should respond 500 when token could not be created', async () => {
@@ -101,7 +101,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(500)
+    expect(response.sendStatus).toHaveBeenCalledWith(500)
   })
 
   it('Should respond 400 when email is empty', async () => {
@@ -117,7 +117,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(401)
+    expect(response.sendStatus).toHaveBeenCalledWith(401)
   })
 
   it('Should respond 400 when email is not sent', async () => {
@@ -131,6 +131,6 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(response.sendStatus).toBeCalledWith(401)
+    expect(response.sendStatus).toHaveBeenCalledWith(401)
   })
 })

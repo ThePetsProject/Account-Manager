@@ -46,7 +46,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(loginResponse.sendStatus).toBeCalledWith(200)
+    expect(loginResponse.sendStatus).toHaveBeenCalledWith(200)
   })
 
   it('Should respond 404 when token is not found', async () => {
@@ -63,7 +63,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(loginResponse.sendStatus).toBeCalledWith(404)
+    expect(loginResponse.sendStatus).toHaveBeenCalledWith(404)
   })
 
   it('Should respond 400 when token is empty', async () => {
@@ -78,7 +78,7 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(loginResponse.sendStatus).toBeCalledWith(400)
+    expect(loginResponse.sendStatus).toHaveBeenCalledWith(400)
   })
 
   it('Should respond 400 when token is not sent', async () => {
@@ -91,6 +91,6 @@ describe('Login route', () => {
       req,
       resMock
     )
-    expect(loginResponse.sendStatus).toBeCalledWith(400)
+    expect(loginResponse.sendStatus).toHaveBeenCalledWith(400)
   })
 })

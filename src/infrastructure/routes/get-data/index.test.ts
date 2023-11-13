@@ -39,8 +39,8 @@ describe('Get user data', () => {
     } as Request
 
     const getDataResponse = await getDataHandler(User, req, mockRes)
-    expect(getDataResponse.status).toBeCalledWith(200)
-    expect(getDataResponse.send).toBeCalledWith(fakeUser)
+    expect(getDataResponse.status).toHaveBeenCalledWith(200)
+    expect(getDataResponse.send).toHaveBeenCalledWith(fakeUser)
   })
   it('Should respond 404 when no user found', async () => {
     User.findOne = jest.fn().mockResolvedValueOnce(undefined)
@@ -54,7 +54,7 @@ describe('Get user data', () => {
     } as Request
 
     const getDataResponse = await getDataHandler(User, req, mockRes)
-    expect(getDataResponse.sendStatus).toBeCalledWith(404)
+    expect(getDataResponse.sendStatus).toHaveBeenCalledWith(404)
   })
   it('Should respond 401 when email is empty', async () => {
     const req = {
@@ -66,7 +66,7 @@ describe('Get user data', () => {
     } as Request
 
     const getDataResponse = await getDataHandler(User, req, mockRes)
-    expect(getDataResponse.sendStatus).toBeCalledWith(401)
+    expect(getDataResponse.sendStatus).toHaveBeenCalledWith(401)
   })
   it('Should respond 401 when email is not defined', async () => {
     const req = {
@@ -76,6 +76,6 @@ describe('Get user data', () => {
     } as Request
 
     const getDataResponse = await getDataHandler(User, req, mockRes)
-    expect(getDataResponse.sendStatus).toBeCalledWith(401)
+    expect(getDataResponse.sendStatus).toHaveBeenCalledWith(401)
   })
 })
