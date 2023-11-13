@@ -31,7 +31,7 @@ export const resetPwdRecoveryHandler = async (
 
   if (!foundUser) return res.status(404).send({ message: 'No user' })
 
-  await foundToken.delete()
+  await foundToken.deleteOne()
 
   return res.sendStatus(204)
 }

@@ -52,9 +52,11 @@ userSchema.pre('save', function (next) {
 
 userSchema.pre('updateOne', function (next) {
   const salt = bcrypt.genSaltSync(15)
-  bcrypt.hash(this._update.password, salt, (err, hash) => {
+  const update = this.getUpdate() as any
+  if (!update || !update.$set || !update.$set.password) return next()
+  bcrypt.hash(update.$set.password, salt, (err, hash) => {
     if (err) return next(err)
-    this._update.password = hash
+    update.$set.password = hash
     return next()
   })
 })
