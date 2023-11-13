@@ -59,7 +59,7 @@ spec:
             value: PRODUCTION
           - name: PORT
             value: "3600"
-          - name: SECRETS_PATH
+          - name: VAULT_SECRETS_FILE_PATH
             value: /vault/secrets/
           - name: APP_BASE_URL
             value: https://thepetsproject.org
